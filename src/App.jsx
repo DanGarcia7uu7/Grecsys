@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginForm from './loginForm'; // el archivo es loginForm.jsx con minúscula
+import LoginForm from './grecsys-frontend/loginForm';
 
 function App() {
   return <LoginForm />;

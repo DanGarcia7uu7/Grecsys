@@ -1,0 +1,46 @@
+
+.corte-card{
+  background: #f6f7fb;
+  border: 1px solid #e0e5ff;
+  border-radius: 16px;
+  padding: 14px;
+  margin: 0 auto;
+}
+
+.corte-table{
+  width: 100%;
+  border-collapse: collapse;
+  background: #f4f4fb;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.corte-table thead{
+  background: #a9b9dd; /* barra gris-azulada como en el mock */
+}
+
+.corte-table th, .corte-table td{
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.corte-table tbody tr:nth-child(even){
+  background: #efeff9;
+}
+
+.corte-empty{
+  text-align: center;
+  padding: 38px 0;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.corte-resumen{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px 10px;
+  color: #1f2a44;
+}

@@ -8,6 +8,8 @@ import ListadoClientes from './grecsys-frontend/ListadoClientes.jsx';
 import Ticket from './grecsys-frontend/Ticket.jsx';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import CorteDelDia from './grecsys-frontend/Cortedia.jsx';
+import Dashboard from './grecsys-frontend/Dashboard.jsx';
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -19,6 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path="/ListadoClientes" element={<ListadoClientes />} /> 
       <Route path="/ticket" element={<Ticket />} />
       <Route path="/CorteDelDia" element={<CorteDelDia />} />
+      <Route path="/Dashboard" element={<Dashboard />} />
     </Routes>
   </BrowserRouter>
 );

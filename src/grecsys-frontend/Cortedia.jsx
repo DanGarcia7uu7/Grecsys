@@ -31,8 +31,9 @@ const CorteDelDia = ({ registrosIniciales = [] }) => {
       <nav className="cliente-navbar">
         <img src="./IMG/logoblanco.png" alt="Logo" className="cliente-logo" />
         <ul>
+          <li className='activo'><Link to="/Dashboard">Dashboard</Link></li>
           <li><Link to="/nuevo-cliente">Nuevo cliente</Link></li>
-          <li><Link to="/ticket">Ticket</Link></li>
+          <li><Link to="/ticket">Pagos</Link></li>
           <li><Link to="/ListadoClientes">Clientes</Link></li>
           <li><Link to="/CorteDelDia">Cortes</Link></li>
         </ul>

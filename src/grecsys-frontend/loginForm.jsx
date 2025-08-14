@@ -30,7 +30,7 @@ const LoginForm = () => {
         console.log('Login exitoso:', data);
         // Guardar datos del usuario en localStorage
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
-        navigate('/PerfilUsuario'); // ir al perfil
+        navigate('/Dashboard'); // ir al perfil
       } else {
         alert(data.mensaje || 'Error en el login');
       }

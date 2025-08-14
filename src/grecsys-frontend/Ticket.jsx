@@ -68,15 +68,16 @@ const Ticket = () => {
       <nav className="cliente-navbar">
         <img src="./IMG/logoblanco.png" alt="Logo" className="cliente-logo" />
         <ul>
+          <li><Link to="/Dashboard">Dashboard</Link></li>
           <li><Link to="/nuevo-cliente">Nuevo cliente</Link></li>
-          <li><Link to="/ticket">Ticket</Link></li>
+          <li><Link to="/ticket">Pagos</Link></li>
           <li><Link to="/ListadoClientes">Clientes</Link></li>
           <li><Link to="/CorteDelDia">Cortes</Link></li>
         </ul>
         <div className="cliente-user-icon"><Link to="/PerfilUsuario">Perfil</Link>👤</div>
       </nav>
 
-      <h2 className="cliente-title">Ticket</h2>
+      <h2 className="cliente-title">Pago</h2>
 
       {/* Formulario */}
       <div className="ticket-form">

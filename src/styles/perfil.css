@@ -1,0 +1,74 @@
+/*Estilo de Perfil */
+.perfil-header{
+  display:flex; justify-content:space-between; align-items:center;
+  background:#fff; border:1px solid #e6e9ff; border-radius:16px;
+  padding:14px 16px; box-shadow: 0 10px 26px rgba(2,6,23,.06); margin-bottom:14px;
+}
+.perfil-header-left{ display:flex; gap:12px; align-items:center }
+.perfil-avatar{
+  width:72px; height:72px; border-radius:999px; background:#e9ebff; border:1px solid #dfe3ff;
+  display:grid; place-items:center; position:relative; overflow:hidden; cursor:default;
+}
+.perfil-avatar img{ width:100%; height:100%; object-fit:cover }
+.perfil-avatar-edit{
+  position:absolute; bottom:4px; left:50%; transform:translateX(-50%);
+  background:rgba(31,42,68,.9); color:#fff; font-size:11px; padding:2px 6px; border-radius:8px;
+}
+.perfil-nombre{ margin:0 0 2px; font-size:20px; color:#2f3a85 }
+.perfil-sub{ color:#606386; font-size:13px }
+.perfil-badge{ display:inline-block; margin-top:6px; padding:4px 8px; font-size:12px; border-radius:999px; font-weight:700 }
+.perfil-badge.ok{ background:#e6f9ed; color:#15803d; border:1px solid #bbf7d0 }
+.perfil-badge.off{ background:#ffe7ea; color:#be123c; border:1px solid #fecdd3 }
+
+.perfil-header-right{ display:flex; gap:8px; align-items:center }
+.btn-prim{ background:#e9e9f7; color:#1f2a44; border:0; padding:10px 12px; border-radius:12px; font-weight:700; cursor:pointer }
+.btn-azul{ background:#7a8eea; color:#fff; border:0; padding:10px 12px; border-radius:12px; font-weight:700; cursor:pointer }
+.btn-ghost{ background:#f4f6ff; color:#2f3a85; border:1px solid #dfe3ff; padding:10px 12px; border-radius:12px; font-weight:700; cursor:pointer }
+.btn-rojo{ background:#ffe1e8; color:#7a1b3a; border:1px solid #ffc2d1; padding:10px 12px; border-radius:12px; font-weight:700; cursor:pointer }
+
+.perfil-error{ background:#fff3cd; color:#7a5a00; border:1px solid #ffe69c; padding:10px 12px; border-radius:12px; margin-bottom:10px }
+
+
+.perfil-grid{
+  display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:14px;
+}
+.perfil-card{
+  background:#ffffff; border:1px solid #e6e9ff; border-radius:16px;
+  padding:14px; box-shadow: 0 10px 26px rgba(2,6,23,.05);
+}
+.p-field{ display:flex; flex-direction:column; gap:6px; margin-bottom:10px }
+.p-field label{ font-weight:600; color:#1f2a44; font-size:14px }
+.p-field input, .p-field select{
+  padding:12px; background:#f3f2f8; border:1px solid #e6e5f2; border-radius:12px; outline:none;
+}
+.p-field input:focus, .p-field select:focus{
+  background:#fff; border-color:#6366f1; box-shadow: 0 0 0 4px rgba(99,102,241,.18);
+}
+
+.perfil-skel-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:14px }
+.skel{ height:110px; border-radius:16px; background:linear-gradient(90deg, #f2f3fb, #e8eaf8, #f2f3fb);
+  background-size:200% 100%; animation: sk 1.2s infinite linear; border:1px solid #e6e9ff }
+@keyframes sk { 0%{background-position:0% 0} 100%{background-position:200% 0} }
+
+.perfil-pagos-head{ display:flex; align-items:center; justify-content:space-between; margin:6px 0 8px }
+.perfil-pagos-head h3{ margin:0; color:#2f3a85 }
+.perfil-pagos-meta{ display:flex; gap:14px; color:#1f2a44 }
+.perfil-pagos-card{ background:#f6f7fb; border:1px solid #e0e5ff; border-radius:16px; padding:10px }
+.perfil-table{ width:100%; border-collapse:collapse; background:#f4f4fb; border-radius:12px; overflow:hidden }
+.perfil-table th, .perfil-table td{ padding:12px 14px; text-align:left }
+.perfil-table thead{ background:#a9b9dd; color:#1e1e2f }
+.perfil-table tbody tr:nth-child(even){ background:#efeff9 }
+
+
+@media (max-width: 860px){
+  .perfil-grid, .perfil-skel-grid{ grid-template-columns: 1fr; }
+  .perfil-header{ flex-direction:column; align-items:flex-start; gap:10px }
+}
+
+/* Textarea consistente con inputs */
+.p-textarea{
+  padding:12px; background:#f3f2f8; border:1px solid #e6e5f2; border-radius:12px; outline:none; resize:vertical;
+}
+.p-textarea:focus{
+  background:#fff; border-color:#6366f1; box-shadow: 0 0 0 4px rgba(99,102,241,.18);
+}

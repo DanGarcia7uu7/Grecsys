@@ -115,7 +115,7 @@ export default function Perfil({ api = { baseUrl: "/api", token: "" } }) {
       <nav className="cliente-navbar">
         <img src="./IMG/logoblanco.png" alt="Logo" className="cliente-logo" />
         <ul>
-          <li className="activo"><Link to="/Dashboard">Dashboard</Link></li>
+          <li><Link to="/Dashboard">Dashboard</Link></li>
           <li><Link to="/nuevo-cliente">Nuevo cliente</Link></li>
           <li><Link to="/Pago">Pagos</Link></li>
           <li><Link to="/ListadoClientes">Clientes</Link></li>
@@ -199,36 +199,6 @@ export default function Perfil({ api = { baseUrl: "/api", token: "" } }) {
         </section>
       )}
 
-      <section className="perfil-card" style={{ marginTop: 12 }}>
-        <h3 style={{ marginTop: 0, color: "#2f3a85" }}>Soporte técnico</h3>
-        <div className="p-field">
-          <label>Asunto</label>
-          <input
-            value={asunto}
-            onChange={(e) => setAsunto(e.target.value)}
-            placeholder="Ej. Problemas con el pago"
-          />
-        </div>
-        <div className="p-field">
-          <label>Mensaje</label>
-          <textarea
-            className="p-textarea"
-            rows={5}
-            value={mensaje}
-            onChange={(e) => setMensaje(e.target.value)}
-            placeholder="Describe tu problema o duda"
-          />
-        </div>
-        <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-          <button
-            className="btn-azul"
-            onClick={enviarSoporte}
-            disabled={enviandoSoporte || !asunto.trim() || !mensaje.trim()}
-          >
-            {enviandoSoporte ? "Enviando…" : "Enviar a soporte"}
-          </button>
-        </div>
-      </section>
     </div>
   );
 }

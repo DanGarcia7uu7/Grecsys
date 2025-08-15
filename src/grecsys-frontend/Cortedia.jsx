@@ -28,27 +28,33 @@ const CorteDelDia = () => {
     fetchPagos();
   }, []);
 
+  // Calcula la cantidad de pagos y el total del día
+  const cantidadPagos = registrosHoy.length;
   const totalDia = useMemo(
-    () =>
-      registrosHoy.reduce((acc, r) => acc + (Number(r.total) || 0), 0),
+    () => registrosHoy.reduce((acc, r) => acc + (Number(r.total) || 0), 0),
     [registrosHoy]
   );
 
   return (
     <div className="cliente-container">
       <nav className="cliente-navbar">
-        <img src="./IMG/logoblanco.png" alt="Logo" className="cliente-logo" />
+        <img src="/IMG/logoblanco.png" alt="Logo" className="cliente-logo" />
         <ul>
-          <li className='activo'><Link to="/Dashboard">Dashboard</Link></li>
+          <li><Link to="/Dashboard">Dashboard</Link></li>
           <li><Link to="/nuevo-cliente">Nuevo cliente</Link></li>
           <li><Link to="/Pago">Pagos</Link></li>
           <li><Link to="/ListadoClientes">Clientes</Link></li>
           <li><Link to="/CorteDelDia">Cortes</Link></li>
         </ul>
-        <div className="cliente-user-icon"><Link to="/PerfilUsuario">Perfil</Link>👤</div>
+        <div className="cliente-user-icon">
+          <Link to="/PerfilUsuario">
+            Mi perfil
+            <img src="/IMG/usuario.png" alt="Ícono de perfil" />
+          </Link>
+        </div>
       </nav>
 
-      <h2 className="cliente-title">Corte del día ({hoy})</h2>
+      <h2 className="cliente-title">Corte del día</h2>
 
       {cargando ? (
         <p>Cargando...</p>
@@ -75,7 +81,7 @@ const CorteDelDia = () => {
                 registrosHoy.map((r, i) => (
                   <tr key={i}>
                     <td>{r.nombre}</td>
-                    <td>{r.fecha_pago}</td>
+                    <td>{r.fecha_pago.split('T')[0]}</td>
                     <td>{r.meses_pagados}</td>
                     <td>${Number(r.precio_paquete).toFixed(2)}</td>
                     <td>${Number(r.total).toFixed(2)}</td>
@@ -86,9 +92,9 @@ const CorteDelDia = () => {
           </table>
 
           <div className="corte-resumen">
-            <span>Registros: {registrosHoy.length}</span>
-            <span>Total del día: <strong>${totalDia.toFixed(2)}</strong></span>
-          </div>
+  <span>Registros: {cantidadPagos}</span>
+  <span>Total del día: <strong>${totalDia.toFixed(2)}</strong></span>
+</div>
         </div>
       )}
     </div>

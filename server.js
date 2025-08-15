@@ -205,6 +205,47 @@ app.get('/api/pagos-corte', async (req, res) => {
 
 
 
+// ====================== DASHBOARD ======================
+
+app.get('/api/dashboard', async (req, res) => {
+  try {
+    await mssql.connect(dbConfig);
+    const hoy = new Date().toISOString().split('T')[0];
+
+    // Pagos de hoy
+    const pagosHoyResult = await mssql.query(`
+      SELECT SUM(costo_paquete) AS totalPagosHoy
+      FROM clientes
+      WHERE CONVERT(date, fecha_pago) = '${hoy}'
+    `);
+
+    // Total acumulado de pagos
+    const pagosAcumResult = await mssql.query(`
+      SELECT SUM(costo_paquete) AS totalPagos
+      FROM clientes
+    `);
+
+    // Clientes activos
+    const clientesActivosResult = await mssql.query(`
+      SELECT COUNT(*) AS totalActivos
+      FROM clientes
+      WHERE activo = 1
+    `);
+
+    res.json({
+      metricas: {
+        pagosHoy: pagosHoyResult.recordset[0]?.totalPagosHoy || 0,
+        pagosAcumulados: pagosAcumResult.recordset[0]?.totalPagos || 0,
+        clientesActivos: clientesActivosResult.recordset[0]?.totalActivos || 0
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: 'Error al obtener datos del dashboard' });
+  }
+});
+
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

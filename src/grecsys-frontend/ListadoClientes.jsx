@@ -32,15 +32,20 @@ const ListadoClientes = () => {
   return (
     <div className="cliente-container">
       <nav className="cliente-navbar">
-        <img src="./IMG/logoblanco.png" alt="Logo" className="cliente-logo" />
+        <img src="/IMG/logoblanco.png" alt="Logo" className="cliente-logo" />
         <ul>
-          <li className='activo'><Link to="/Dashboard">Dashboard</Link></li>
+          <li><Link to="/Dashboard">Dashboard</Link></li>
           <li><Link to="/nuevo-cliente">Nuevo cliente</Link></li>
           <li><Link to="/Pago">Pagos</Link></li>
           <li><Link to="/ListadoClientes">Clientes</Link></li>
           <li><Link to="/CorteDelDia">Cortes</Link></li>
         </ul>
-        <div className="cliente-user-icon"><Link to="/PerfilUsuario">Perfil</Link>👤</div>
+        <div className="cliente-user-icon">
+          <Link to="/PerfilUsuario">
+            Mi cuenta
+            <img src="/IMG/usuario.png" alt="Ícono de perfil" />
+          </Link>
+        </div>
       </nav>
 
       <h2 className="cliente-title">Listado de clientes</h2>

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import '../styles/dashboard.css';
 
+const API_URL = "https://mediumpurple-jay-246326.hostingersite.com/api";
+
 export default function Dashboard() {
     const [totalClientes, setTotalClientes] = useState(0);
     const [pagosHoy, setPagosHoy] = useState([]);
@@ -10,13 +12,13 @@ export default function Dashboard() {
 
     useEffect(() => {
         // Obtener total de clientes de la API
-        fetch('http://localhost:3001/api/total-clientes')
+        fetch(`${API_URL}/total-clientes`)
             .then(res => res.json())
             .then(data => setTotalClientes(data.total || 0))
             .catch(err => console.error('Error al obtener el total de clientes:', err));
 
         // Obtener pagos de hoy de la API (más eficiente)
-        fetch('http://localhost:3001/api/pagos-hoy')
+        fetch(`${API_URL}/pagos-hoy`)
             .then(res => res.json())
             .then(data => setPagosHoy(data || []))
             .catch(err => console.error('Error al obtener pagos del día:', err));
@@ -54,7 +56,7 @@ export default function Dashboard() {
             <section className="dash-hero">
               <div className="dash-hero-text">
                 <h3>Bienvenido, {usuario?.nombre || 'Usuario'} :3</h3>
-                <h3>Paquetes mas solicitado por el cliente</h3>
+                <h3>Paquetes más solicitados por los clientes</h3>
               </div>
               <div className="dash-hero-illu" aria-hidden>💻</div>
             </section>
@@ -67,10 +69,10 @@ export default function Dashboard() {
                     </div>
                     <div className="paquete-body">
                         <ul>
-                            <li>Conexion via fibra o antena</li>
+                            <li>Conexión vía fibra o antena</li>
                             <li>Por 100 pesos adicionales incluye:</li>
-                            <li>TV con más 3500 canales libres</li>
-                            <li>películas y series ilimitadas</li>
+                            <li>TV con más de 3500 canales libres</li>
+                            <li>Películas y series ilimitadas</li>
                         </ul>
                     </div>
                 </div>
@@ -82,10 +84,10 @@ export default function Dashboard() {
                     </div>
                     <div className="paquete-body">
                         <ul>
-                            <li>Conexion via fibra o antena</li>
+                            <li>Conexión vía fibra o antena</li>
                             <li>Por 100 pesos adicionales incluye:</li>
-                            <li>TV con más 3500 canales libres</li>
-                            <li>películas y series ilimitadas</li>
+                            <li>TV con más de 3500 canales libres</li>
+                            <li>Películas y series ilimitadas</li>
                         </ul>
                     </div>
                 </div>
@@ -97,10 +99,10 @@ export default function Dashboard() {
                     </div>
                     <div className="paquete-body">
                         <ul>
-                            <li>Conexion via fibra o antena</li>
+                            <li>Conexión vía fibra o antena</li>
                             <li>Por 100 pesos adicionales incluye:</li>
-                            <li>TV con más 3500 canales libres</li>
-                            <li>películas y series ilimitadas</li>
+                            <li>TV con más de 3500 canales libres</li>
+                            <li>Películas y series ilimitadas</li>
                         </ul>
                     </div>
                 </div>
@@ -112,10 +114,10 @@ export default function Dashboard() {
                     </div>
                     <div className="paquete-body">
                         <ul>
-                            <li>Conexion via fibra o antena</li>
+                            <li>Conexión vía fibra o antena</li>
                             <li>Por 100 pesos adicionales incluye:</li>
-                            <li>TV con más 3500 canales libres</li>
-                            <li>películas y series ilimitadas</li>
+                            <li>TV con más de 3500 canales libres</li>
+                            <li>Películas y series ilimitadas</li>
                         </ul>
                     </div>
                 </div>

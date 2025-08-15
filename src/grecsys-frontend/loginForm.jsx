@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import '../styles/style.css';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = "https://mediumpurple-jay-246326.hostingersite.com/api";
+
 const LoginForm = () => {
   const [nombre, setNombre] = useState('');
   const [contrasena, setContrasena] = useState('');
@@ -18,7 +20,7 @@ const LoginForm = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/api/login', {
+      const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombre, contrasena }),
@@ -83,8 +85,6 @@ const LoginForm = () => {
         <button type="submit" className="login-button">
           Iniciar sesión
         </button>
-
-
       </form>
     </div>
   );

@@ -72,3 +72,25 @@
 .p-textarea:focus{
   background:#fff; border-color:#6366f1; box-shadow: 0 0 0 4px rgba(99,102,241,.18);
 }
+
+/* Estilos por defecto para escritorio (pantallas grandes) */
+.dash-paquetes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+/* Estilos para móviles (pantallas de 768px o menos) */
+@media (max-width: 768px) {
+    .dash-paquetes {
+        /* Cambia el layout a una sola columna */
+        flex-direction: column; 
+        align-items: center; /* Centra las tarjetas */
+    }
+
+    .dash-paquete-card {
+        width: 90%; /* Las tarjetas ocupan casi todo el ancho */
+    }
+}

@@ -84,9 +84,7 @@ const LoginForm = () => {
           Iniciar sesión
         </button>
 
-        <div className="forgot-password">
-          <a href="/olvide">¿Olvidaste tu contraseña?</a>
-        </div>
+
       </form>
     </div>
   );

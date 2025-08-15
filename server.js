@@ -1,5 +1,4 @@
 import express from 'express';
-import mssql from 'mssql';
 import sql from 'mssql';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -10,14 +9,15 @@ const PORT = 3001;
 app.use(cors());
 app.use(bodyParser.json());
 
+// Configuración de conexión a la base remota
 const dbConfig = {
-  user: 'admin',
-  password: 'admin',
-  server: 'DESKTOP-C84JDK3',
+  user: 'sqlserver',           // tu usuario
+  password: 'danielo8.',       // tu contraseña
+  server: '34.134.21.103',     // IP de tu servidor Cloud SQL
   database: 'grecsys_db',
   options: {
-    encrypt: false,
-    trustServerCertificate: true,
+    encrypt: true,             // habilitar encriptación TLS
+    trustServerCertificate: false, // no confiar en certificado auto-firmado
   },
 };
 
@@ -55,7 +55,6 @@ app.post('/api/login', async (req, res) => {
 
 // ====================== INSERTAR CLIENTE ======================
 app.post('/api/clientes', async (req, res) => {
-  console.log('Datos recibidos en /api/clientes:', req.body);
   const fecha_ultimo_pago = req.body.fecha_ultimo_pago || req.body.fecha_pago;
   const activo = req.body.activo !== undefined ? req.body.activo : true;
 
@@ -71,16 +70,8 @@ app.post('/api/clientes', async (req, res) => {
   } = req.body;
 
   const requiredFields = [
-    'nombre',
-    'direccion',
-    'telefono',
-    'ip',
-    'contrasena',
-    'conexion',
-    'costo_paquete',
-    'fecha_pago',
-    'fecha_ultimo_pago',
-    'activo'
+    'nombre', 'direccion', 'telefono', 'ip', 'contrasena',
+    'conexion', 'costo_paquete', 'fecha_pago', 'fecha_ultimo_pago', 'activo'
   ];
 
   const missingFields = requiredFields.filter(field => {
@@ -129,8 +120,6 @@ app.get('/api/clientes', async (req, res) => {
   }
 });
 
-
-
 // ====================== GENERAR PAGO Y TICKET ======================
 app.post('/api/pagos-tickets', async (req, res) => {
   const { cliente_id, meses_pagados, precio_paquete, descripcion } = req.body;
@@ -148,7 +137,6 @@ app.post('/api/pagos-tickets', async (req, res) => {
 
     const requestPago = new sql.Request(transaction);
 
-    // Insertar pago y obtener el id generado
     const resultPago = await requestPago.query`
       INSERT INTO pagos (cliente_id, fecha_pago, meses_pagados, precio_paquete)
       OUTPUT INSERTED.id_pagos
@@ -156,7 +144,6 @@ app.post('/api/pagos-tickets', async (req, res) => {
     `;
     const pagoId = resultPago.recordset[0].id_pagos;
 
-    // Insertar ticket usando el id del pago recién creado
     const requestTicket = new sql.Request(transaction);
     await requestTicket.query`
       INSERT INTO tickets (pago_id, cliente_id, descripcion, estado, fecha_creacion)
@@ -182,9 +169,9 @@ app.post('/api/pagos-tickets', async (req, res) => {
 // ====================== BUSCAR PAGOS ======================
 app.get('/api/pagos-corte', async (req, res) => {
   try {
-    await mssql.connect(dbConfig);
+    await sql.connect(dbConfig);
 
-    const result = await mssql.query(`
+    const result = await sql.query(`
       SELECT 
         c.nombre,
         p.fecha_pago,
@@ -203,30 +190,24 @@ app.get('/api/pagos-corte', async (req, res) => {
   }
 });
 
-
-
 // ====================== DASHBOARD ======================
-
 app.get('/api/dashboard', async (req, res) => {
   try {
-    await mssql.connect(dbConfig);
+    await sql.connect(dbConfig);
     const hoy = new Date().toISOString().split('T')[0];
 
-    // Pagos de hoy
-    const pagosHoyResult = await mssql.query(`
+    const pagosHoyResult = await sql.query(`
       SELECT SUM(costo_paquete) AS totalPagosHoy
       FROM clientes
       WHERE CONVERT(date, fecha_pago) = '${hoy}'
     `);
 
-    // Total acumulado de pagos
-    const pagosAcumResult = await mssql.query(`
+    const pagosAcumResult = await sql.query(`
       SELECT SUM(costo_paquete) AS totalPagos
       FROM clientes
     `);
 
-    // Clientes activos
-    const clientesActivosResult = await mssql.query(`
+    const clientesActivosResult = await sql.query(`
       SELECT COUNT(*) AS totalActivos
       FROM clientes
       WHERE activo = 1
@@ -244,7 +225,6 @@ app.get('/api/dashboard', async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener datos del dashboard' });
   }
 });
-
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);

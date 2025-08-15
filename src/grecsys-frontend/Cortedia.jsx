@@ -40,7 +40,7 @@ const CorteDelDia = () => {
       <nav className="cliente-navbar">
         <img src="/IMG/logoblanco.png" alt="Logo" className="cliente-logo" />
         <ul>
-          <li><Link to="/Dashboard">Dashboard</Link></li>
+          <li><Link to="/Dashboard">GrecSys</Link></li>
           <li><Link to="/nuevo-cliente">Nuevo cliente</Link></li>
           <li><Link to="/Pago">Pagos</Link></li>
           <li><Link to="/ListadoClientes">Clientes</Link></li>

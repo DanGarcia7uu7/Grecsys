@@ -52,7 +52,6 @@ const Pago = () => {
         // --- Encabezado ---
         doc.setFontSize(10);
         doc.text("FACTURA", 15, 20);
-        doc.text(`Factura n.º: ${ticketData.factura_numero}`, 15, 25);
         doc.text(`Fecha: ${ticketData.fecha}`, 15, 30);
 
         // --- Datos del cliente ---
@@ -62,8 +61,6 @@ const Pago = () => {
         doc.setFont("helvetica", "bold");
         doc.text(ticketData.cliente_nombre.toUpperCase(), 15, 55);
         doc.setFont("helvetica", "normal");
-        doc.text(`(${ticketData.cliente_telefono})`, 15, 60);
-        doc.text(ticketData.cliente_direccion, 15, 65);
         
         // --- Tabla de artículos ---
         const tableData = ticketData.items.map(item => [
@@ -106,9 +103,6 @@ const Pago = () => {
         doc.text(`$${subtotal.toFixed(2)}`, 195, finalY, { align: 'right' });
         finalY += 7;
         
-        doc.text("Impuestos (0%):", 170, finalY, { align: 'right' });
-        doc.text("$0", 195, finalY, { align: 'right' });
-        finalY += 10;
         
         doc.setFontSize(14);
         doc.setFont("helvetica", "bold");
@@ -138,18 +132,14 @@ const Pago = () => {
         doc.line(15, finalY, 195, finalY);
         finalY += 5;
 
-        doc.text("Nombre de tu Negocio", 15, finalY);
-        doc.text("Tu Teléfono", 120, finalY);
+        doc.text("Serinter (servicios informáticos y de internet)", 15, finalY);
+        doc.text("7637866074", 120, finalY);
         finalY += 5;
-        doc.text("Tu Banco", 15, finalY);
-        doc.text("Tu Email", 120, finalY);
+        doc.text("gaxserintergax@gmail.com ", 120, finalY);
         finalY += 5;
-        doc.text("Tu Cuenta: XXXXXX", 15, finalY);
-        doc.text("Tu Dirección", 120, finalY);
+        doc.text("Calle 16 de enero, Presas", 120, finalY);
         finalY += 5;
-        doc.text(`Fecha de pago: ${ticketData.fecha_pago}`, 15, finalY);
-        finalY += 5;
-        doc.text("Tu Sitio Web", 120, finalY);
+        doc.text("https://paleturquoise-chamois-845602.hostingersite.com/", 120, finalY);
 
         doc.save(`factura_${ticketData.cliente_nombre}.pdf`);
     };
@@ -197,7 +187,6 @@ const Pago = () => {
                     cliente_nombre: clienteSeleccionado.nombre,
                     cliente_telefono: clienteSeleccionado.telefono,
                     cliente_direccion: clienteSeleccionado.direccion,
-                    fecha_pago: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' }),
                     descripcion: descripcionTicket, // <-- Se añade aquí
                     items: [
                         { articulo: "Servicio de Internet", cantidad: mesesPagados, precio: precioPaquete },
@@ -220,7 +209,7 @@ const Pago = () => {
             <nav className="cliente-navbar">
                 <img src="/IMG/logoblanco.png" alt="Logo" className="cliente-logo" />
                 <ul>
-                    <li><Link to="/Dashboard">Dashboard</Link></li>
+                    <li><Link to="/Dashboard">GrecSys</Link></li>
                     <li><Link to="/nuevo-cliente">Nuevo cliente</Link></li>
                     <li><Link to="/Pago">Pagos</Link></li>
                     <li><Link to="/ListadoClientes">Clientes</Link></li>
@@ -234,7 +223,7 @@ const Pago = () => {
                 </div>
             </nav>
 
-            <h2 className="cliente-title">Pago</h2>
+            <h2 className="cliente-title">Generar pagos</h2>
 
             {!clienteSeleccionado && (
                 <>
@@ -252,18 +241,16 @@ const Pago = () => {
                         <thead>
                             <tr>
                                 <th>Nombre</th>
-                                <th>Fecha de pago</th>
                                 <th>Dirección IP</th>
                                 <th>Conexión</th>
                                 <th>Costo paquete</th>
-                                <th>Acción</th>
+                                <th>Pagar</th>
                             </tr>
                         </thead>
                         <tbody>
                             {clientesFiltrados.map((cliente, index) => (
                                 <tr key={index}>
                                     <td>{cliente.nombre}</td>
-                                    <td>{cliente.fecha_pago?.split('T')[0]}</td>
                                     <td>{cliente.ip}</td>
                                     <td>{cliente.conexion}</td>
                                     <td>{cliente.costo_paquete}</td>

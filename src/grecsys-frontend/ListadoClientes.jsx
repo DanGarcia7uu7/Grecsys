@@ -36,7 +36,7 @@ const ListadoClientes = () => {
         <ul>
           <li className='activo'><Link to="/Dashboard">Dashboard</Link></li>
           <li><Link to="/nuevo-cliente">Nuevo cliente</Link></li>
-          <li><Link to="/ticket">Pagos</Link></li>
+          <li><Link to="/Pago">Pagos</Link></li>
           <li><Link to="/ListadoClientes">Clientes</Link></li>
           <li><Link to="/CorteDelDia">Cortes</Link></li>
         </ul>
@@ -61,7 +61,7 @@ const ListadoClientes = () => {
             <th>Nombre</th>
             <th>Fecha de pago</th>
             <th>Fecha último pago</th>
-            <th>IP</th>
+            <th>Direccion IP</th>
             <th>Dirección</th>
             <th>Conexión</th>
             <th>Costo paquete</th>

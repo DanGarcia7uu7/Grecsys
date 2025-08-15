@@ -1,4 +1,5 @@
 import express from 'express';
+import mssql from 'mssql';
 import sql from 'mssql';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -55,8 +56,6 @@ app.post('/api/login', async (req, res) => {
 // ====================== INSERTAR CLIENTE ======================
 app.post('/api/clientes', async (req, res) => {
   console.log('Datos recibidos en /api/clientes:', req.body);
-
-  // Asignar valores por defecto primero
   const fecha_ultimo_pago = req.body.fecha_ultimo_pago || req.body.fecha_pago;
   const activo = req.body.activo !== undefined ? req.body.activo : true;
 
@@ -71,7 +70,6 @@ app.post('/api/clientes', async (req, res) => {
     fecha_pago
   } = req.body;
 
-  // Validación de campos obligatorios
   const requiredFields = [
     'nombre',
     'direccion',
@@ -119,9 +117,7 @@ app.post('/api/clientes', async (req, res) => {
   }
 });
 
-
-// ====================== Buscar CLIENTE ======================
-
+// ====================== BUSCAR CLIENTES ======================
 app.get('/api/clientes', async (req, res) => {
   try {
     await sql.connect(dbConfig);
@@ -130,6 +126,80 @@ app.get('/api/clientes', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, mensaje: 'Error del servidor' });
+  }
+});
+
+
+
+// ====================== GENERAR PAGO Y TICKET ======================
+app.post('/api/pagos-tickets', async (req, res) => {
+  const { cliente_id, meses_pagados, precio_paquete, descripcion } = req.body;
+
+  if (!cliente_id || !meses_pagados || !precio_paquete || !descripcion) {
+    return res.status(400).json({ mensaje: 'Faltan campos obligatorios' });
+  }
+
+  let pool;
+  try {
+    pool = await sql.connect(dbConfig);
+    const transaction = new sql.Transaction(pool);
+
+    await transaction.begin();
+
+    const requestPago = new sql.Request(transaction);
+
+    // Insertar pago y obtener el id generado
+    const resultPago = await requestPago.query`
+      INSERT INTO pagos (cliente_id, fecha_pago, meses_pagados, precio_paquete)
+      OUTPUT INSERTED.id_pagos
+      VALUES (${cliente_id}, GETDATE(), ${meses_pagados}, ${precio_paquete})
+    `;
+    const pagoId = resultPago.recordset[0].id_pagos;
+
+    // Insertar ticket usando el id del pago recién creado
+    const requestTicket = new sql.Request(transaction);
+    await requestTicket.query`
+      INSERT INTO tickets (pago_id, cliente_id, descripcion, estado, fecha_creacion)
+      VALUES (${pagoId}, ${cliente_id}, ${descripcion}, 'Abierto', GETDATE())
+    `;
+
+    await transaction.commit();
+
+    res.json({ mensaje: 'Pago y ticket registrados correctamente', pagoId });
+  } catch (err) {
+    if (pool) {
+      try {
+        await pool.rollback();
+      } catch (rollbackErr) {
+        console.error('Error al hacer rollback:', rollbackErr);
+      }
+    }
+    console.error('Error al registrar pago y ticket:', err);
+    res.status(500).json({ mensaje: 'Error al registrar pago y ticket' });
+  }
+});
+
+// ====================== BUSCAR PAGOS ======================
+app.get('/api/pagos-corte', async (req, res) => {
+  try {
+    await mssql.connect(dbConfig);
+
+    const result = await mssql.query(`
+      SELECT 
+        c.nombre,
+        p.fecha_pago,
+        p.meses_pagados,
+        p.precio_paquete,
+        (p.meses_pagados * p.precio_paquete) AS total
+      FROM pagos p
+      INNER JOIN clientes c ON c.id_clientes = p.cliente_id
+      WHERE CONVERT(date, p.fecha_pago) = CONVERT(date, GETDATE())
+    `);
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: 'Error al obtener pagos del corte del día' });
   }
 });
 

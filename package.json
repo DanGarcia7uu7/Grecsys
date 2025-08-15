@@ -17,6 +17,7 @@
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "jspdf": "^3.0.1",
     "msnodesqlv8": "^5.1.1",
     "mssql": "^11.0.1",
     "react": "^19.1.0",

@@ -182,7 +182,7 @@ export default function Dashboard({
         <ul> 
             <li className='activo'><Link to="/Dashboard">Dashboard</Link></li>
             <li><Link to="/nuevo-cliente">Nuevo cliente</Link></li>
-            <li><Link to="/ticket">Pagos</Link></li>
+            <li><Link to="/Pago">Pagos</Link></li>
             <li><Link to="/ListadoClientes">Clientes</Link></li>
             <li><Link to="/CorteDelDia">Cortes</Link></li>
         </ul>

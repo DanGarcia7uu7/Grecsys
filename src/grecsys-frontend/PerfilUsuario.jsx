@@ -2,17 +2,19 @@ import React, { useEffect, useState } from "react";
 import "../styles/perfil.css";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Perfil({ usuario = {}, api = { baseUrl: "/api", token: "" } }) {
-  const navigate = useNavigate(); // 👈 para redirigir
+export default function Perfil({ api = { baseUrl: "/api", token: "" } }) {
+  const navigate = useNavigate();
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
   const [edit, setEdit] = useState(false);
 
+  const usuarioLogeado = JSON.parse(localStorage.getItem("usuario")) || {};
+
   const [perfil, setPerfil] = useState({
     id_usuarios: "",
     cliente_id: "",
-    usuario: "",
-    correo: "",
+    usuario: usuarioLogeado.nombre || "",
+    correo: usuarioLogeado.correo || "",
     activo: true,
     fecha_creacion: null,
     ultimo_login: null,
@@ -24,11 +26,11 @@ export default function Perfil({ usuario = {}, api = { baseUrl: "/api", token: "
 
   const fmtDate = (d) => (d ? new Date(d).toLocaleString("es-MX") : "—");
 
-  // 🔹 Función para cerrar sesión
+  // Cerrar sesión
   const cerrarSesion = () => {
-    localStorage.removeItem("token"); // O lo que uses para guardar sesión
-    sessionStorage.clear(); // Limpia cualquier dato temporal
-    navigate("/"); // Redirige al inicio
+    localStorage.removeItem("usuario");
+    sessionStorage.clear();
+    navigate("/");
   };
 
   useEffect(() => {
@@ -37,7 +39,7 @@ export default function Perfil({ usuario = {}, api = { baseUrl: "/api", token: "
       try {
         setCargando(true);
         setError("");
-        const id = usuario?.id ?? "me";
+        const id = usuarioLogeado.id ?? "me";
         const res = await fetch(`${api.baseUrl}/usuarios/${id}`, {
           headers: {
             "Content-Type": "application/json",
@@ -47,15 +49,15 @@ export default function Perfil({ usuario = {}, api = { baseUrl: "/api", token: "
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (cancel) return;
-        setPerfil({
+        setPerfil((p) => ({
+          ...p,
           id_usuarios: data.id_usuarios ?? data.id ?? "",
           cliente_id: data.cliente_id ?? "",
-          usuario: data.usuario ?? "",
-          correo: data.correo ?? data.email ?? "",
+          correo: data.correo ?? data.email ?? p.correo,
           activo: Boolean(data.activo ?? true),
           fecha_creacion: data.fecha_creacion ?? null,
           ultimo_login: data.ultimo_login ?? null,
-        });
+        }));
       } catch (e) {
         console.error(e);
         if (!cancel) setError("No se pudo cargar el perfil.");
@@ -67,41 +69,11 @@ export default function Perfil({ usuario = {}, api = { baseUrl: "/api", token: "
     return () => {
       cancel = true;
     };
-  }, [api?.baseUrl, api?.token, usuario?.id]);
+  }, [api?.baseUrl, api?.token, usuarioLogeado.id]);
 
   const onChange = (e) => {
     const { name, value, type, checked } = e.target;
     setPerfil((p) => ({ ...p, [name]: type === "checkbox" ? checked : value }));
-  };
-
-  const guardar = async () => {
-    try {
-      setCargando(true);
-      setError("");
-      const id = usuario?.id ?? perfil.id_usuarios ?? "me";
-      const payload = {
-        cliente_id: perfil.cliente_id === "" ? null : Number(perfil.cliente_id),
-        usuario: perfil.usuario,
-        correo: perfil.correo,
-        activo: perfil.activo ? 1 : 0,
-      };
-      const res = await fetch(`${api.baseUrl}/usuarios/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          ...(api?.token ? { Authorization: `Bearer ${api.token}` } : {}),
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      setEdit(false);
-      alert("Perfil actualizado ✔");
-    } catch (e) {
-      console.error(e);
-      setError("No se pudo guardar el perfil.");
-    } finally {
-      setCargando(false);
-    }
   };
 
   const enviarSoporte = async () => {
@@ -112,7 +84,7 @@ export default function Perfil({ usuario = {}, api = { baseUrl: "/api", token: "
     try {
       setEnviandoSoporte(true);
       const body = {
-        usuario_id: perfil.id_usuarios || usuario?.id || null,
+        usuario_id: perfil.id_usuarios || usuarioLogeado.id || null,
         usuario: perfil.usuario,
         correo: perfil.correo || null,
         asunto,
@@ -143,9 +115,9 @@ export default function Perfil({ usuario = {}, api = { baseUrl: "/api", token: "
       <nav className="cliente-navbar">
         <img src="./IMG/logoblanco.png" alt="Logo" className="cliente-logo" />
         <ul>
-          <li className='activo'><Link to="/Dashboard">Dashboard</Link></li>
+          <li className="activo"><Link to="/Dashboard">Dashboard</Link></li>
           <li><Link to="/nuevo-cliente">Nuevo cliente</Link></li>
-          <li><Link to="/ticket">Pagos</Link></li>
+          <li><Link to="/Pago">Pagos</Link></li>
           <li><Link to="/ListadoClientes">Clientes</Link></li>
           <li><Link to="/CorteDelDia">Cortes</Link></li>
         </ul>
@@ -156,21 +128,17 @@ export default function Perfil({ usuario = {}, api = { baseUrl: "/api", token: "
         </div>
       </nav>
 
-       <h2 className="cliente-title">Perfil</h2>
+      <h2 className="cliente-title">Perfil</h2>
 
       <section className="perfil-header">
         <div className="perfil-header-left">
-          <div className="perfil-avatar" aria-hidden>
-            👤
-          </div>
+          <div className="perfil-avatar" aria-hidden>👤</div>
           <div>
-            <h3 className="perfil-nombre">{perfil.usuario || "Usuario"}</h3>
+            <h3 className="perfil-nombre">{usuarioLogeado.nombre || "Usuario"}</h3>
             <div className={`perfil-badge ${perfil.activo ? "ok" : "off"}`}>
               {perfil.activo ? "Activo" : "Suspendido"}
             </div>
-            <div className="perfil-sub">
-              Último login: {fmtDate(perfil.ultimo_login)}
-            </div>
+            <div className="perfil-sub">Último login: {fmtDate(perfil.ultimo_login)}</div>
           </div>
         </div>
       </section>
@@ -179,9 +147,7 @@ export default function Perfil({ usuario = {}, api = { baseUrl: "/api", token: "
 
       {cargando ? (
         <div className="perfil-skel-grid">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="skel" />
-          ))}
+          {Array.from({ length: 4 }).map((_, i) => (<div key={i} className="skel" />))}
         </div>
       ) : (
         <section className="perfil-grid">
@@ -190,9 +156,8 @@ export default function Perfil({ usuario = {}, api = { baseUrl: "/api", token: "
               <label>Usuario</label>
               <input
                 name="usuario"
-                value={perfil.usuario}
-                onChange={onChange}
-                disabled={!edit}
+                value={usuarioLogeado.nombre || perfil.usuario || ""}
+                disabled
               />
             </div>
             <div className="p-field">
@@ -211,9 +176,7 @@ export default function Perfil({ usuario = {}, api = { baseUrl: "/api", token: "
           <div className="perfil-card">
             <div className="p-field">
               <label>Activo</label>
-              <label
-                style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
-              >
+              <label style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
                 <input
                   type="checkbox"
                   name="activo"

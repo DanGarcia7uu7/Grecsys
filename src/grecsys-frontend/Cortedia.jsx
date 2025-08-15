@@ -1,28 +1,36 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from "react-router-dom";
 import '../styles/corte.css';
 
-const CorteDelDia = ({ registrosIniciales = [] }) => {
-  // Datos de ejemplo o de props
-  const registrosBase = registrosIniciales.length ? registrosIniciales : [
-    { nombre: 'María Pérez', fechaPago: '2025-08-13', meses: 1, precio: 350, total: 350 },
-    { nombre: 'Juan López',  fechaPago: '2025-08-13', meses: 2, precio: 300, total: 600 },
-    { nombre: 'Ana García',  fechaPago: '2025-08-12', meses: 1, precio: 400, total: 400 },
-  ];
+const CorteDelDia = () => {
+  const [registrosHoy, setRegistrosHoy] = useState([]);
+  const [cargando, setCargando] = useState(true);
 
-  // Fecha de hoy
   const hoy = new Date().toISOString().split('T')[0];
 
-  // Filtramos solo los pagos de hoy
-  const registrosHoy = registrosBase.filter(r => r.fechaPago === hoy);
+  useEffect(() => {
+    const fetchPagos = async () => {
+      try {
+        const res = await fetch('http://localhost:3001/api/pagos-corte');
+        if (res.ok) {
+          const data = await res.json();
+          setRegistrosHoy(data);
+        } else {
+          console.error('Error al obtener pagos del día');
+        }
+      } catch (err) {
+        console.error('Error en la petición:', err);
+      } finally {
+        setCargando(false);
+      }
+    };
 
-  // Calcular total del día
+    fetchPagos();
+  }, []);
+
   const totalDia = useMemo(
     () =>
-      registrosHoy.reduce(
-        (acc, r) => acc + (Number(r.total) || (Number(r.meses) * Number(r.precio) || 0)),
-        0
-      ),
+      registrosHoy.reduce((acc, r) => acc + (Number(r.total) || 0), 0),
     [registrosHoy]
   );
 
@@ -33,7 +41,7 @@ const CorteDelDia = ({ registrosIniciales = [] }) => {
         <ul>
           <li className='activo'><Link to="/Dashboard">Dashboard</Link></li>
           <li><Link to="/nuevo-cliente">Nuevo cliente</Link></li>
-          <li><Link to="/ticket">Pagos</Link></li>
+          <li><Link to="/Pago">Pagos</Link></li>
           <li><Link to="/ListadoClientes">Clientes</Link></li>
           <li><Link to="/CorteDelDia">Cortes</Link></li>
         </ul>
@@ -42,44 +50,47 @@ const CorteDelDia = ({ registrosIniciales = [] }) => {
 
       <h2 className="cliente-title">Corte del día ({hoy})</h2>
 
-      <div className="corte-card">
-        <table className="corte-table">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Fecha de pago</th>
-              <th>Meses de pago</th>
-              <th>Precio paquete</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {registrosHoy.length === 0 ? (
+      {cargando ? (
+        <p>Cargando...</p>
+      ) : (
+        <div className="corte-card">
+          <table className="corte-table">
+            <thead>
               <tr>
-                <td className="corte-empty" colSpan={5}>
-                  No hay registros para hoy
-                </td>
+                <th>Nombre</th>
+                <th>Fecha de pago</th>
+                <th>Meses de pago</th>
+                <th>Precio paquete</th>
+                <th>Total</th>
               </tr>
-            ) : (
-              registrosHoy.map((r, i) => (
-                <tr key={i}>
-                  <td>{r.nombre}</td>
-                  <td>{r.fechaPago}</td>
-                  <td>{r.meses}</td>
-                  <td>${Number(r.precio).toFixed(2)}</td>
-                  <td>${(Number(r.total) || Number(r.meses) * Number(r.precio)).toFixed(2)}</td>
+            </thead>
+            <tbody>
+              {registrosHoy.length === 0 ? (
+                <tr>
+                  <td className="corte-empty" colSpan={5}>
+                    No hay registros para hoy
+                  </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                registrosHoy.map((r, i) => (
+                  <tr key={i}>
+                    <td>{r.nombre}</td>
+                    <td>{r.fecha_pago}</td>
+                    <td>{r.meses_pagados}</td>
+                    <td>${Number(r.precio_paquete).toFixed(2)}</td>
+                    <td>${Number(r.total).toFixed(2)}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
 
-        <div className="corte-resumen">
-          <span>Registros: {registrosHoy.length}</span>
-          <span>Total del día: <strong>${totalDia.toFixed(2)}</strong></span>
+          <div className="corte-resumen">
+            <span>Registros: {registrosHoy.length}</span>
+            <span>Total del día: <strong>${totalDia.toFixed(2)}</strong></span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

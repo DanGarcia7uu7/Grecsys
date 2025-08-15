@@ -29,8 +29,9 @@ const LoginForm = () => {
       if (response.ok) {
         console.log('Login exitoso:', data);
         // Guardar datos del usuario en localStorage
-        localStorage.setItem('usuario', JSON.stringify(data.usuario));
-        navigate('/Dashboard'); // ir al perfil
+        localStorage.setItem('usuario', JSON.stringify({ nombre: data.nombre }));
+        // Redirigir al Dashboard
+        navigate('/Dashboard');
       } else {
         alert(data.mensaje || 'Error en el login');
       }
